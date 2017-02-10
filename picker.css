@@ -1,0 +1,92 @@
+
+	.calendar {
+		width: 280px; /* 7 * -width- */
+		float: left;
+		font-size: 14px;
+		margin: 10px;
+		user-select: none;
+	}
+
+	table {
+		table-layout: fixed;
+		border-spacing: 0;
+		border-collapse: collapse;
+	}
+	.row {
+
+	}
+	.cell {
+		line-height: 40px;
+		width: 40px;
+		text-align: center;
+	}
+
+	.day-name {
+		font-size: 12px;
+		line-height: 20px;
+		padding-top: 10px;
+		color: #BBB;
+	}
+
+	.date {
+		cursor: default;
+		border: 1px solid #EEE;
+		font-weight: 600;
+	}
+	.date[data-valid="true"] {
+		cursor: pointer;
+	}
+	.date[data-valid="true"]:hover {
+		background: rgba(0,0,0,0.2);
+	}
+
+	.monthheader {
+		text-align: center;
+		position: relative;
+	}
+	.monthname {
+
+	}
+
+	.button {
+		position: absolute;
+		top: 0;
+		width: 30px;
+		height: 30px;
+		padding: 5px;
+		border: 1px solid #FFF;
+	}
+	.button:hover {
+		cursor: pointer;
+		background: rgba(0,0,0,0.2);
+		border: 1px solid #20c3fd;
+		border-radius: 3px;
+	}
+	.button svg {
+		fill: #07a2d9;
+		width: 20px;
+		height: 20px;
+	}
+
+	.decrease { left: 0; }
+	.decrease svg { transform: rotate(180deg); }
+	.increase { right: 0; }
+
+	.is-edge,
+	.is-ok { color: #333; }
+	.is-outside,
+	.is-other-month { color: #DDD; }
+
+	.date[data-state] {
+		border-style: double;
+	}
+	.date[data-state="pending"],
+	.date[data-state="start"],
+	.date[data-state="end"] {
+		background: #07a2d9 !important;
+		border-color: #07a2d9;
+	}
+	.date[data-state="between"] {
+		background: #bfe4f1;
+		border-color: #20c3fd;
+	}
