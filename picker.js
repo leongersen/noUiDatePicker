@@ -35,6 +35,32 @@
 		return this;
 	};
 
+	var Classes = {
+		calendar: 'dp-calendar',
+		monthHeader: 'dp-month-header',
+		monthName: 'dp-month-name',
+		dayNames: 'dp-day-names',
+		dayName: 'dp-day-name',
+		button: 'dp-button',
+		decrease: 'dp-decrease',
+		increase: 'dp-increase',
+		table: 'dp-table',
+		row: 'dp-row',
+		cell: 'dp-cell',
+		week: 'dp-week',
+		date: 'dp-date',
+		isOtherMonth: 'dp-is-other-month',
+		isCurrentMonth: 'dp-is-current-month',
+		isEdge: 'dp-is-edge',
+		isStart: 'dp-is-start',
+		isOutside: 'dp-is-outside',
+		isBeforeStart: 'dp-is-before-start',
+		isEdge: 'dp-is-edge',
+		isEnd: 'dp-is-end',
+		isOutside: 'dp-is-outside',
+		isAfterEnd: 'dp-is-after-end',
+		isOk: 'dp-is-ok'
+	};
 
 	//
 	function copy ( y, m, d ) {
@@ -86,16 +112,16 @@
 
 		var html = '';
 
-		html += '<div class="monthheader">';
+		html += '<div class="' + Classes.monthHeader + '">';
 		
 		if ( (!index || !opt.twoCalendars) && paintPrev ) {
-			html += '<div class="button decrease">' + opt.icon + '</div>';
+			html += '<div class="' + Classes.button + ' ' + Classes.decrease + '">' + opt.icon + '</div>';
 		}
 		
-		html += '<div class="monthname">' + opt.monthNames[dt.getMonth()] + ' ' + dt.getFullYear() + '</div>';
+		html += '<div class="' + Classes.monthName + '">' + opt.monthNames[dt.getMonth()] + ' ' + dt.getFullYear() + '</div>';
 		
 		if ( (index || !opt.twoCalendars) && paintNext ) {
-			html += '<div class="button increase">' + opt.icon + '</div>';
+			html += '<div class="' + Classes.button + ' ' + Classes.increase + '">' + opt.icon + '</div>';
 		}
 		
 		html += '</div>';
@@ -139,7 +165,7 @@
 
 		for ( var i = 0; i < 6; i++ ) {
 
-			html += '<tr class="row week">';
+			html += '<tr class="' + Classes.row + ' ' + Classes.week + '">';
 
 			for ( var j = 0; j < 7; j++ ) {
 				html += '<td ' + classifier(currentDate, firstDayOfMonth) +'>' + currentDate.getDate() + '</td>';
@@ -159,14 +185,14 @@
 		var html = '';
 
 		html += renderMonthHeader(dt, index, opt, paintPrev, paintNext);
-		html += '<table>';
-		html += '<tr class="row day-names">' + opt.dayNamesShort.map(function( a ){
-			return '<th class="cell day-name">' + a + '</th>';
+		html += '<table class="' + Classes.table + '">';
+		html += '<tr class="' + Classes.row + ' ' + Classes.dayNames + '">' + opt.dayNamesShort.map(function( a ){
+			return '<th class="' + Classes.cell + ' ' + Classes.dayName + '">' + a + '</th>';
 		}).join('') + '</tr>';
 		html += renderDatesInMonth(dt, classifier);
 		html += '</table>';
 
-		element.className = 'calendar';
+		element.className = Classes.calendar;
 		element.innerHTML = html;
 
 		return element;
@@ -220,34 +246,34 @@
 
 		function classify ( currentDate, firstDayOfMonth ) {
 
-			var classes = ['cell', 'date'];
+			var classes = [Classes.cell, Classes.date];
 			var valid = 'true';
 			var currentMonth = false;
 
 			if ( currentDate.getMonth() !== firstDayOfMonth.getMonth() ) {
-				classes.push('is-other-month');
+				classes.push(Classes.isOtherMonth);
 				valid = 'false';
 			} else {
-				classes.push('is-current-month');
+				classes.push(Classes.isCurrentMonth);
 				currentMonth = true;
 			}
 
 			if ( currentDate.getTime() === START.getTime() ) {
-				classes.push('is-edge');
-				classes.push('is-start');
+				classes.push(Classes.isEdge);
+				classes.push(Classes.isStart);
 			} else if ( currentDate < START ) {
 				valid = 'false';
-				classes.push('is-outside');
-				classes.push('is-before-start');
+				classes.push(Classes.isOutside);
+				classes.push(Classes.isBeforeStart);
 			} else if ( currentDate.getTime() === END.getTime() ) {
-				classes.push('is-edge');
-				classes.push('is-end');
+				classes.push(Classes.isEdge);
+				classes.push(Classes.isEnd);
 			} else if ( currentDate > END ) {
 				valid = 'false';
-				classes.push('is-outside');
-				classes.push('is-after-end');
+				classes.push(Classes.isOutside);
+				classes.push(Classes.isAfterEnd);
 			} else if ( currentMonth ) {
-				classes.push('is-ok');
+				classes.push(Classes.isOk);
 			}
 
 			return renderDateAttributes(currentDate) + ' data-valid="' + valid + '" class="' + classes.join(' ') + '"';
@@ -271,8 +297,8 @@
 				ROOT.appendChild(build(currentCopy.addMonths(1), 1, options, CAN_PREV, CAN_NEXT, classify));
 			}
 
-			addEventListener(ROOT.querySelector('.decrease'), 'click', interfacePrev);
-			addEventListener(ROOT.querySelector('.increase'), 'click', interfaceNext);
+			addEventListener(ROOT.querySelector('.' + Classes.decrease), 'click', interfacePrev);
+			addEventListener(ROOT.querySelector('.' + Classes.increase), 'click', interfaceNext);
 		}
 
 		function clearClickedCells ( ) {
@@ -303,7 +329,7 @@
 
 		function markCellsBetweenClickedCells ( minCalcValue, maxCalcValue ) {
 
-			BETWEEN_CELLS = toArray(ROOT.querySelectorAll('.date.is-current-month'));
+			BETWEEN_CELLS = toArray(ROOT.querySelectorAll('.' + Classes.date + '.' + Classes.isCurrentMonth));
 
 			BETWEEN_CELLS.forEach(function( tableCell ){
 
