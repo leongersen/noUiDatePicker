@@ -18,50 +18,46 @@
 		var flyout_arrival = document.getElementById('flyout-arrival');
 		var flyout_departure = document.getElementById('flyout-departure');
 
-		var span_startValue = document.getElementById('a');
-		var span_endValue = document.getElementById('b');
+		var span_arrivalValue = document.getElementById('a');
+		var span_departureValue = document.getElementById('b');
 
-		var startPickerNode = document.getElementById('date-1');
-		var endPickerNode = document.getElementById('date-2');
-		var bothPickerNode = document.getElementById('date-3');
+		var node_arrivalPicker = document.getElementById('date-1');
+		var node_departurePicker = document.getElementById('date-2');
+		var node_bothPicker = document.getElementById('date-3');
 
-		var startPicker;
-		var endPicker;
+		var arrivalPicker;
+		var departurePicker;
 		var bothPicker;
 
 		var startValue = false;
 		var endValue = false;
-		
-		var other = document.getElementById('other');
-		
-		// This would work based on screen width
-		function choose ( ) {
-			return !!document.getElementById('on').checked;
+
+		function useTwoCalendars ( ) {
+			return window.innerWidth > 650;
 		}
 
-		function show ( tgt ) {
-			tgt.removeAttribute('data-closed');
-			tgt.appendChild(other);
+		function show ( target ) {
+			target.removeAttribute('hidden');
 		}
 		
 		function show1 ( ) {
-			show(choose() ? flyout_both : flyout_arrival);
+			show(useTwoCalendars() ? flyout_both : flyout_arrival);
 		}
 
 		function show2 ( ) {
-			show(choose() ? flyout_both : (startValue ? flyout_departure : flyout_arrival));
+			show(useTwoCalendars() ? flyout_both : (startValue ? flyout_departure : flyout_arrival));
 		}
 
 		document.getElementById('button1').addEventListener('click', show1);
 		document.getElementById('button2').addEventListener('click', show2);
 
 		function setStart ( a ) {
-			span_startValue.innerHTML = a ? a.dmY() : 'Aankomstdatum';
+			span_arrivalValue.innerHTML = a ? a.dmY() : 'Aankomstdatum';
 			startValue = a;
 		}
 
 		function setEnd ( a ) {
-			span_endValue.innerHTML = a ? a.dmY() : 'Vertrekdatum';
+			span_departureValue.innerHTML = a ? a.dmY() : 'Vertrekdatum';
 			endValue = a;
 		}
 
@@ -70,15 +66,13 @@
 			var value = this.get();
 			var selectionIsComplete = this.isTwoCalendars() ? !!value.nights : !!value.start;
 
-			console.log(selectionIsComplete, value, this.id);
-			
 			if ( this.id == 'start' ) {
 
 				setStart(value.start);
 
 				if ( selectionIsComplete ) {
-					buildEndPicker(startPicker.tools.copyDate(value.start).addDays(1));
-					flyout_arrival.setAttribute('data-closed', true);
+					buildDeparturePicker(arrivalPicker.tools.copyDate(value.start).addDays(1));
+					flyout_arrival.setAttribute('hidden', '');
 				}
 			}
 
@@ -87,7 +81,7 @@
 				setEnd(value.start);
 
 				if ( selectionIsComplete ) {
-					flyout_departure.setAttribute('data-closed', true);
+					flyout_departure.setAttribute('hidden', '');
 				}
 			}
 
@@ -97,20 +91,18 @@
 				setEnd(value.end);
 
 				if ( selectionIsComplete ) {
-					flyout_both.setAttribute('data-closed', true);
+					flyout_both.setAttribute('hidden', '');
 				}
 			}
 
-			console.log( startValue ? startValue.dmY() : false, endValue ? endValue.dmY() : false );
-
-			if ( startValue ) startPicker.select(startValue);
-			if ( startValue && endPicker && endValue ) endPicker.select(endValue);
+			if ( startValue ) arrivalPicker.select(startValue);
+			if ( startValue && departurePicker && endValue ) departurePicker.select(endValue);
 			if ( startValue && this.id != 'both' ) bothPicker.select(startValue, endValue);
 		}
 
-		function buildStartPicker ( ) {
+		function buildArrivalPicker ( ) {
 			
-			startPicker = new Picker(startPickerNode, {
+			arrivalPicker = new Picker(node_arrivalPicker, {
 				id: 'start',
 				start: commonStart,
 				end: commonEnd,
@@ -123,9 +115,9 @@
 			});
 		}
 
-		function buildEndPicker ( start ) {
+		function buildDeparturePicker ( start ) {
 			
-			endPicker = new Picker(endPickerNode, {
+			departurePicker = new Picker(node_departurePicker, {
 				id: 'end',
 				start: start,
 				end: commonEnd,
@@ -140,7 +132,7 @@
 
 		function buildBothPicker ( ) {
 			
-			bothPicker = new Picker(bothPickerNode, {
+			bothPicker = new Picker(node_bothPicker, {
 				id: 'both',
 				start: commonStart,
 				end: commonEnd,
@@ -154,7 +146,7 @@
 			});
 		}
 
-		buildStartPicker();
+		buildArrivalPicker();
 		buildBothPicker();
 		
 	}());

@@ -12,10 +12,6 @@
 		user-select: none;
 	}
 	
-	.flyout[data-closed="true"] {
-		display: none;
-	}
-	
 	#flyout-both {
 		width: 600px;
 	}
@@ -24,32 +20,22 @@
 
 <body>
 
-	<label style="display: block;">
-		<input id="on" type="checkbox" checked><br>
-		<span>Multiple</span>
-	</label>
-
 	<span id="a">Aankomstdatum</span><br><button id="button1">SHOW1</button><br>
 	<span id="b">Vertrekdatum</span><br><button id="button2">SHOW2</button><br>
 
-	<div class="flyout" id="flyout-arrival" data-closed="true">
+	<div class="flyout" id="flyout-arrival" hidden>
 		<span class="flyout-title">Kies uw aankomstdatum</span>
 		<div id="date-1"></div>
 	</div>
 
-	<div class="flyout" id="flyout-departure" data-closed="true">
+	<div class="flyout" id="flyout-departure" hidden>
 		<span class="flyout-title">Kies uw vertrekdatum</span>
 		<div id="date-2"></div>
 	</div>
 
-	<div class="flyout" id="flyout-both" data-closed="true">
+	<div class="flyout" id="flyout-both" hidden>
 		<span class="flyout-title">Kies uw vakantieperiode</span>
 		<div id="date-3"></div>
-	</div>
-	
-	<div id="other">
-		<label><input type="checkbox" name="a">A</label>
-		<label><input type="checkbox" name="b">B</label>
 	</div>
 
 	<script src="picker.js"></script>
