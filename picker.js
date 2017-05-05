@@ -47,19 +47,19 @@
 		isOk: 'calendar-is-ok'
 	};
 
-	// Return NEW \Date
+	// Returns MODIFIED \Date
 	Date.prototype.null = function ( ) {
 		this.setHours(0,0,0,0);
 		return this;
 	};
 
-	// Returns NEW \Date
+	// Returns MODIFIED \Date
 	Date.prototype.addDays = function ( days ) {
 		this.setDate(this.getDate() + days);
 		return this;
 	};
 
-	// Returns NEW \Date
+	// Returns MODIFIED \Date
 	Date.prototype.addMonths = function ( months ) {
 		this.setMonth(this.getMonth() + months);
 		return this;
@@ -142,7 +142,7 @@
 
 	// Unique ID for a date cell.
 	function getCalcForDate ( dt ) {
-		return dt.getFullYear() + '' + pad(dt.getMonth() + 1) + '' + pad(dt.getDate());
+		return dt.getFullYear() + '' + pad(dt.getMonth()) + '' + pad(dt.getDate()); // Month is 0 indexed!
 	}
 
 	// Creates a new Date from the data-* properties on a cell.
@@ -504,7 +504,7 @@
 			interfaceClear(true);
 
 			if ( options.twoCalendars && isSameMonth(dt, END) ) {
-				dt = dt.addMonths(-1);
+				dt.addMonths(-1); // Modifies 'dt'
 			}
 
 			CURRENT = dt.null();

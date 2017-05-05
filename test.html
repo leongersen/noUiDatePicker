@@ -132,7 +132,7 @@
 
 			picker.select(d1);
 
-			root.querySelector('[data-calc="20161017"]').click();
+			root.querySelector('[data-calc="20160917"]').click();
 
 			assert.equal(picker.get().start.Ymd(), d1.Ymd(), 'Start was set ok');
 			assert.equal(picker.get().end.Ymd(), '2016-10-17', 'End was set ok');
@@ -142,7 +142,7 @@
 
 			picker.select(d2);
 
-			root.querySelector('[data-calc="20161009"]').click(); // Click selected cell, fires clear
+			root.querySelector('[data-calc="20160909"]').click(); // Click selected cell, fires clear. Month in calc is 0-indexed, 09 is october.
 			assert.equal(root.querySelectorAll('[data-state="start"],[data-state="end"]').length, 0, 'Cell was cleared');
 			assert.equal(picker.get().start, false, 'Start was cleared');
 			assert.equal(picker.get().end, false, 'End was not set');
