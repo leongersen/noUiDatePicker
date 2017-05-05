@@ -20,6 +20,30 @@
 
 	'use strict';
 
+	var Classes = {
+		header: 'calendar-header',
+		button: 'calendar-button',
+		buttonDecrease: 'calendar-button-decrease',
+		buttonIncrease: 'calendar-button-increase',
+		headerMonth: 'calendar-header-month',
+		monthName: 'calendar-month-name',
+		dayName: 'calendar-day-name',
+		row: 'calendar-row',
+		table: 'calendar-table',
+		calendar: 'calendar',
+		cell: 'calendar-cell',
+		date: 'calendar-date',
+		isOtherMonth: 'calendar-is-other-month',
+		isCurrentMonth: 'calendar-is-current-month',
+		isEdge: 'calendar-is-edge',
+		isStart: 'calendar-is-start',
+		isOutside: 'calendar-is-outside',
+		isBeforeStart: 'calendar-is-before-start',
+		isEnd: 'calendar-is-end',
+		isAfterEnd: 'calendar-is-after-end',
+		isOk: 'calendar-is-ok'
+	};
+
 	// Return NEW \Date
 	Date.prototype.null = function ( ) {
 		this.setHours(0,0,0,0);
@@ -96,16 +120,16 @@
 		paintPreviousMonth = paintPreviousMonth && (!index || !opt.twoCalendars);
 		paintNextMonth = paintNextMonth && (index || !opt.twoCalendars);
 
-		html += '<div class="calendar-header">';
+		html += '<div class="' + Classes.header + '">';
 
 		if ( paintPreviousMonth ) {
-			html += '<div class="button decrease">' + opt.icon + '</div>';
+			html += '<div class="' + Classes.button + ' ' + Classes.buttonDecrease + '">' + opt.icon + '</div>';
 		}
 
-		html += '<div class="calendar-header-month">' + '<strong class="month-name">' + opt.monthNames[dt.getMonth()] + '</strong>' + ' ' + dt.getFullYear() + '</div>';
+		html += '<div class="' + Classes.headerMonth + '">' + '<strong class="' + Classes.monthName + '">' + opt.monthNames[dt.getMonth()] + '</strong>' + ' ' + dt.getFullYear() + '</div>';
 
 		if ( paintNextMonth ) {
-			html += '<div class="button increase">' + opt.icon + '</div>';
+			html += '<div class="' + Classes.button + ' ' + Classes.buttonIncrease + '">' + opt.icon + '</div>';
 		}
 
 		html += '</div>';
@@ -149,7 +173,7 @@
 
 		for ( var i = 0; i < 6; i++ ) {
 
-			html += '<tr class="row week">';
+			html += '<tr class="' + Classes.row + '">';
 
 			for ( var j = 0; j < 7; j++ ) {
 				html += '<td ' + classifier(currentDate, firstDayOfMonth) +'>' + currentDate.getDate() + '</td>';
@@ -170,17 +194,17 @@
 
 		html += renderMonthHeader(dt, index, opt, paintPreviousMonth, paintNextMonth);
 
-		html += '<table class="calendar-table">';
+		html += '<table class="' + Classes.table + '">';
 
-		html += '<tr class="calendar-row">' + opt.dayNamesShort.map(function( a ){
-			return '<th class="calendar-cell day-name">' + a + '</th>';
+		html += '<tr class="' + Classes.row + '">' + opt.dayNamesShort.map(function( a ){
+			return '<th class="' + Classes.cell + ' ' + Classes.dayName + '">' + a + '</th>';
 		}).join('') + '</tr>';
 
 		html += renderDatesInMonth(dt, classifier);
 
 		html += '</table>';
 
-		element.className = 'calendar';
+		element.className = Classes.calendar;
 		element.innerHTML = html;
 
 		return element;
@@ -240,34 +264,34 @@
 		// Generate list of classes for date cells.
 		function classify ( currentDate, firstDayOfMonth ) {
 
-			var classes = ['calendar-cell', 'date'];
+			var classes = [Classes.cell, Classes.date];
 			var valid = 'true';
 			var currentMonth = false;
 
 			if ( currentDate.getMonth() !== firstDayOfMonth.getMonth() ) {
-				classes.push('is-other-month');
+				classes.push(Classes.isOtherMonth);
 				valid = 'false';
 			} else {
-				classes.push('is-current-month');
+				classes.push(Classes.isCurrentMonth);
 				currentMonth = true;
 			}
 
 			if ( currentDate.getTime() === START.getTime() ) {
-				classes.push('is-edge');
-				classes.push('is-start');
+				classes.push(Classes.isEdge);
+				classes.push(Classes.isStart);
 			} else if ( currentDate < START ) {
 				valid = 'false';
-				classes.push('is-outside');
-				classes.push('is-before-start');
+				classes.push(Classes.isOutside);
+				classes.push(Classes.isBeforeStart);
 			} else if ( currentDate.getTime() === END.getTime() ) {
-				classes.push('is-edge');
-				classes.push('is-end');
+				classes.push(Classes.isEdge);
+				classes.push(Classes.isEnd);
 			} else if ( currentDate > END ) {
 				valid = 'false';
-				classes.push('is-outside');
-				classes.push('is-after-end');
+				classes.push(Classes.isOutside);
+				classes.push(Classes.isAfterEnd);
 			} else if ( currentMonth ) {
-				classes.push('is-ok');
+				classes.push(Classes.isOk);
 			}
 
 			return renderDateAttributes(currentDate) + ' data-valid="' + valid + '" class="' + classes.join(' ') + '"';
@@ -293,8 +317,8 @@
 			}
 
 			// Ignore CAN_PREV and CAN_NEXT, just check if there are buttons.
-			var decrease = ROOT.querySelector('.decrease');
-			var increase = ROOT.querySelector('.increase');
+			var decrease = ROOT.querySelector('.' + Classes.buttonDecrease);
+			var increase = ROOT.querySelector('.' + Classes.buttonIncrease);
 
 			if ( decrease ) decrease.addEventListener('click', interfacePrev);
 			if ( increase ) increase.addEventListener('click', interfaceNext);
@@ -330,7 +354,7 @@
 		// Mark cells between START_CELL and END_CELL.
 		function markCellsBetweenClickedCells ( minCalcValue, maxCalcValue ) {
 
-			BETWEEN_CELLS = toArray(ROOT.querySelectorAll('.date.is-current-month'));
+			BETWEEN_CELLS = toArray(ROOT.querySelectorAll('.' + Classes.date + '.' + Classes.isCurrentMonth));
 
 			BETWEEN_CELLS.forEach(function( tableCell ){
 

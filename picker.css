@@ -18,22 +18,22 @@
 		text-align: center;
 	}
 
-	.day-name {
+	.calendar-day-name {
 		font-size: 12px;
 		line-height: 20px;
 		padding-top: 10px;
 		color: #BBB;
 	}
 
-	.date {
+	.calendar-date {
 		cursor: default;
 		border: 1px solid #EEE;
 		font-weight: 600;
 	}
-	.date[data-valid="true"] {
+	.calendar-date[data-valid="true"] {
 		cursor: pointer;
 	}
-	.date[data-valid="true"]:hover {
+	.calendar-date[data-valid="true"]:hover {
 		background: rgba(0,0,0,0.2);
 	}
 
@@ -44,7 +44,7 @@
 		font-size: 16px;
 	}
 
-	.button {
+	.calendar-button {
 		position: absolute;
 		top: 0;
 		width: 30px;
@@ -52,37 +52,37 @@
 		padding: 5px;
 		border: 1px solid #FFF;
 	}
-	.button:hover {
+	.calendar-button:hover {
 		cursor: pointer;
 		background: rgba(0,0,0,0.2);
 		border: 1px solid #20c3fd;
 		border-radius: 3px;
 	}
-	.button svg {
+	.calendar-button svg {
 		fill: #07a2d9;
 		width: 20px;
 		height: 20px;
 	}
 
-	.decrease { left: 0; }
-	.decrease svg { transform: rotate(180deg); }
-	.increase { right: 0; }
+	.calendar-button-decrease { left: 0; }
+	.calendar-button-decrease svg { transform: rotate(180deg); }
+	.calendar-button-increase { right: 0; }
 
-	.is-edge,
-	.is-ok { color: #333; }
-	.is-outside,
-	.is-other-month { color: #DDD; }
+	.calendar-is-edge,
+	.calendar-is-ok { color: #333; }
+	.calendar-is-outside,
+	.calendar-is-other-month { color: #DDD; }
 
-	.date[data-state] {
+	.calendar-date[data-state] {
 		border-style: double;
 	}
-	.date[data-state="pending"],
-	.date[data-state="start"],
-	.date[data-state="end"] {
+	.calendar-date[data-state="pending"],
+	.calendar-date[data-state="start"],
+	.calendar-date[data-state="end"] {
 		background: #07a2d9 !important;
 		border-color: #07a2d9;
 	}
-	.date[data-state="between"] {
+	.calendar-date[data-state="between"] {
 		background: #bfe4f1;
 		border-color: #20c3fd;
 	}
