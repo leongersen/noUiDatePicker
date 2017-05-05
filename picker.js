@@ -35,8 +35,11 @@
 		return this;
 	};
 
+	Date.prototype.Ymd = function ( ) {
+		return this.getFullYear() + '-' + pad(this.getMonth() + 1) + '-' + pad(this.getDate());
+	};
 
-	//
+	// if y = DateTime, copy it. Otherwise, create a new one from year, month, date
 	function copy ( y, m, d ) {
 
 		if ( y instanceof Date ) {
@@ -64,40 +67,44 @@
 		return Array.prototype.slice.call(n);
 	}
 
-	//
+	// Left pad
 	function pad ( a ) {
 		var str = String(a);
 		var pad = '00';
 		return pad.substring(0, pad.length - str.length) + str;
 	}
 
-	//
+	// Check is date is not NaN
 	function isValidDate ( dt ) {
 		return Object.prototype.toString.call(dt) === "[object Date]" && !isNaN(dt.getTime());
 	}
 
-	//
+	// Checks if month and year are the same
 	function isSameMonth ( dt, dt2 ) {
 		return dt.getMonth() === dt2.getMonth() && dt.getFullYear() === dt2.getFullYear();
 	}
 
 	// Generate month name and buttons
-	function renderMonthHeader ( dt, index, opt, paintPrev, paintNext ) {
+	function renderMonthHeader ( dt, index, opt, paintPreviousMonth, paintNextMonth ) {
 
 		var html = '';
 
-		html += '<div class="monthheader">';
-		
-		if ( (!index || !opt.twoCalendars) && paintPrev ) {
+		// P
+		paintPreviousMonth = paintPreviousMonth && (!index || !opt.twoCalendars);
+		paintNextMonth = paintNextMonth && (index || !opt.twoCalendars);
+
+		html += '<div class="month-header">';
+
+		if ( paintPreviousMonth ) {
 			html += '<div class="button decrease">' + opt.icon + '</div>';
 		}
-		
-		html += '<div class="monthname">' + opt.monthNames[dt.getMonth()] + ' ' + dt.getFullYear() + '</div>';
-		
-		if ( (index || !opt.twoCalendars) && paintNext ) {
+
+		html += '<div class="month-name">' + opt.monthNames[dt.getMonth()] + ' ' + dt.getFullYear() + '</div>';
+
+		if ( paintNextMonth ) {
 			html += '<div class="button increase">' + opt.icon + '</div>';
 		}
-		
+
 		html += '</div>';
 
 		return html;
@@ -121,7 +128,7 @@
 
 		return false;
 	}
-	
+
 	// Generate data-attributes for date cells
 	function renderDateAttributes ( dt ) {
 		return 'data-calc="' + getCalcForDate(dt) + '" ' +
@@ -152,18 +159,22 @@
 		return html + '';
 	}
 
-	// Create a calendar element for a given date
-	function build ( dt, index, opt, paintPrev, paintNext, classifier ) {
+	// Create a calendar element for a given date. index = 0 for first, 1 for second calendar.
+	function build ( dt, index, opt, paintPreviousMonth, paintNextMonth, classifier ) {
 
 		var element = document.createElement('div');
 		var html = '';
 
-		html += renderMonthHeader(dt, index, opt, paintPrev, paintNext);
-		html += '<table>';
-		html += '<tr class="row day-names">' + opt.dayNamesShort.map(function( a ){
-			return '<th class="cell day-name">' + a + '</th>';
+		html += renderMonthHeader(dt, index, opt, paintPreviousMonth, paintNextMonth);
+
+		html += '<table class="calendar-table">';
+
+		html += '<tr class="calendar-row">' + opt.dayNamesShort.map(function( a ){
+			return '<th class="calendar-cell day-name">' + a + '</th>';
 		}).join('') + '</tr>';
+
 		html += renderDatesInMonth(dt, classifier);
+
 		html += '</table>';
 
 		element.className = 'calendar';
@@ -179,13 +190,25 @@
 		}
 	}
 
+	// Test input[type="date"] support
+	function supportsInputTypeDate ( ) {
+
+		var input = document.createElement('input');
+		input.setAttribute('type','date');
+
+		var notADateValue = 'not-a-date';
+		input.setAttribute('value', notADateValue);
+
+		return input.value !== notADateValue;
+	}
+
 	// Variables global to Picker are UPPERCASED.
 	function Picker ( ROOT, options ) {
 
 		// Copies of input with all time properties set to 0
 		var START = copy(options.start).null();
 		var END = copy(options.end).null();
-		
+
 		// Current calendar date
 		var CURRENT = copy(START);
 
@@ -199,14 +222,15 @@
 		// Array of TableCell
 		// Set in 'markCellsBetweenClickedCells';
 		var BETWEEN_CELLS = false;
-		
+
 		// Whether the prev and next buttons do anything. Set in 'generateCalendarForCurrent';
 		var CAN_NEXT = true;
 		var CAN_PREV = true;
-		
+
 		// Furthest visible calendar
 		var END_LIMIT = getEndLimit(copy(END));
-		
+
+		// Get the last \Date that can be set
 		function getEndLimit ( dt ) {
 
 			dt.addMonths(-1);
@@ -214,13 +238,14 @@
 			if ( options.twoCalendars ) {
 				dt.addMonths(-1);
 			}
-			
+
 			return dt;
 		}
 
+		// Generate list of classes for date cells
 		function classify ( currentDate, firstDayOfMonth ) {
 
-			var classes = ['cell', 'date'];
+			var classes = ['calendar-cell', 'date'];
 			var valid = 'true';
 			var currentMonth = false;
 
@@ -253,6 +278,7 @@
 			return renderDateAttributes(currentDate) + ' data-valid="' + valid + '" class="' + classes.join(' ') + '"';
 		}
 
+		// Read CURRENT, create a calendar. Binds click events to buttons
 		function generateCalendarForCurrent ( ) {
 
 			CURRENT.setDate(1);
@@ -275,6 +301,7 @@
 			addEventListener(ROOT.querySelector('.increase'), 'click', interfaceNext);
 		}
 
+		// Clear ACTIVE_CELL, START_CELL, END_CELL and BETWEEN_CELLS
 		function clearClickedCells ( ) {
 
 			if ( ACTIVE_CELL ) {
@@ -301,6 +328,7 @@
 			BETWEEN_CELLS = false;
 		}
 
+		// Mark cells between START_CELL and END_CELL
 		function markCellsBetweenClickedCells ( minCalcValue, maxCalcValue ) {
 
 			BETWEEN_CELLS = toArray(ROOT.querySelectorAll('.date.is-current-month'));
@@ -315,10 +343,12 @@
 			});
 		}
 
+		// Get date cell for a \Date
 		function getCellForDate ( dt ) {
 			return ROOT.querySelector('[data-calc="' + getCalcForDate(dt) + '"][data-valid="true"]');
 		}
 
+		// Call function from options, if set. Does not emit browser events.
 		function emitEvent ( name ) {
 			if ( options['on' + name] ) {
 				options['on' + name].call(API);
@@ -422,7 +452,7 @@
 			}
 
 			interfaceClear(true);
-			
+
 			if ( options.twoCalendars && isSameMonth(dt, END) ) {
 				dt.addMonths(-1);
 			}
@@ -451,6 +481,14 @@
 			}
 		}
 
+		function interfaceDestroy ( ) {
+			ROOT.innerHTML = '';
+		}
+
+		function interfaceIsTwoCalendars ( ) {
+			return !!options.twoCalendars;
+		}
+
 		generateCalendarForCurrent();
 		attachNodeEvents();
 
@@ -461,15 +499,19 @@
 			set: interfaceSet,
 			select: interfaceSelect,
 			clear: interfaceClear,
-			tools: {
-				copyDate: copy
-			},
-			id: options.id,
-			destroy: function ( ) { ROOT.innerHTML = ''; },
-			isTwoCalendars: function ( ) { return !!options.twoCalendars; }
+			destroy: interfaceDestroy,
+			isTwoCalendars: interfaceIsTwoCalendars
 		};
 
 		return API;
+	}
+
+	Picker.prototype.pad = pad;
+	Picker.prototype.copy = copy;
+
+	// Set a class on the document for external use
+	if ( !supportsInputTypeDate() ) {
+		document.documentElement.classList.add('js-no-type-date-support');
 	}
 
 	return Picker;

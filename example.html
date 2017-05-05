@@ -4,69 +4,59 @@
 
 <style>
 
-	.flyout {
+	#position {
+		position: relative;
+	}
+
+	.calendar {
 		background: #FFF;
 		position: absolute;
-		width: 300px;
-		z-index: 25;
-		user-select: none;
+		top: 100%;
+		left: 0;
+		z-index: 10;
 	}
-	
-	.flyout[data-closed="true"] {
+
+	.date-input-fallback {
 		display: none;
 	}
-	
-	#flyout-both {
-		width: 600px;
+
+	.js-no-type-date-support .date-input-native {
+		display: none !important;
+	}
+
+	.js-no-type-date-support .date-input-fallback {
+		display: inline-block !important;
+	}
+
+	@media ( min-width: 1025px ) {
+
+		.date-input-fallback {
+			display: inline-block;
+		}
+		.date-input-native {
+			display: none;
+		}
 	}
 
 </style>
 
 <body>
 
-	<label style="display: block;">
-		<input id="on" type="checkbox" checked><br>
-		<span>Multiple</span>
-	</label>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam urna nisl, rutrum quis neque vitae, luctus luctus sem. Etiam tempor scelerisque ligula, vel vestibulum metus interdum in. Aenean eleifend eu purus nec elementum. Maecenas eu tellus neque. Vivamus bibendum tristique purus, sed pulvinar augue bibendum et. Etiam euismod egestas condimentum. Etiam et ullamcorper dui. Suspendisse feugiat, urna sed dapibus mattis, dolor elit maximus sapien, eu sodales dolor nunc id diam. In convallis erat in scelerisque posuere. Aenean tincidunt placerat risus. Curabitur quis nibh eu nunc ultricies eleifend sagittis non arcu.</p>
 
-	<span id="a">Aankomstdatum</span><br><button id="button1">SHOW1</button><br>
-	<span id="b">Vertrekdatum</span><br><button id="button2">SHOW2</button><br>
+	<p>Cras vehicula et augue id gravida. Aliquam massa lectus, varius quis semper a, mollis id mi. Vestibulum ut felis ligula. Mauris et eros eros. Suspendisse vel pulvinar ante, non tincidunt ante. Pellentesque tempus, ex vitae pretium rutrum, ligula tortor vehicula ipsum, id faucibus augue mauris a purus. In tempor viverra condimentum. Donec eget tellus venenatis, blandit elit laoreet, finibus sem. Donec pulvinar mauris sit amet nisl sodales lobortis.</p>
 
-	<div class="flyout" id="flyout-arrival" data-closed="true">
-		<span class="flyout-title">Kies uw aankomstdatum</span>
-		<div id="date-1"></div>
+	<div id="position">
+		<input class="date-input-native" id="date" type="date" name="date" min="2016-11-03" max="2017-02-11">
+		<input class="date-input-fallback" id="alt" type="text" placeholder="Aankomstdatum">
+		<div id="picker" hidden></div>
 	</div>
 
-	<div class="flyout" id="flyout-departure" data-closed="true">
-		<span class="flyout-title">Kies uw vertrekdatum</span>
-		<div id="date-2"></div>
-	</div>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam urna nisl, rutrum quis neque vitae, luctus luctus sem. Etiam tempor scelerisque ligula, vel vestibulum metus interdum in. Aenean eleifend eu purus nec elementum. Maecenas eu tellus neque. Vivamus bibendum tristique purus, sed pulvinar augue bibendum et. Etiam euismod egestas condimentum. Etiam et ullamcorper dui. Suspendisse feugiat, urna sed dapibus mattis, dolor elit maximus sapien, eu sodales dolor nunc id diam. In convallis erat in scelerisque posuere. Aenean tincidunt placerat risus. Curabitur quis nibh eu nunc ultricies eleifend sagittis non arcu.</p>
 
-	<div class="flyout" id="flyout-both" data-closed="true">
-		<span class="flyout-title">Kies uw vakantieperiode</span>
-		<div id="date-3"></div>
-	</div>
-	
-	<div id="other">
-		<label><input type="checkbox" name="a">A</label>
-		<label><input type="checkbox" name="b">B</label>
-	</div>
+	<p>Cras vehicula et augue id gravida. Aliquam massa lectus, varius quis semper a, mollis id mi. Vestibulum ut felis ligula. Mauris et eros eros. Suspendisse vel pulvinar ante, non tincidunt ante. Pellentesque tempus, ex vitae pretium rutrum, ligula tortor vehicula ipsum, id faucibus augue mauris a purus. In tempor viverra condimentum. Donec eget tellus venenatis, blandit elit laoreet, finibus sem. Donec pulvinar mauris sit amet nisl sodales lobortis.</p>
 
 	<script src="picker.js"></script>
 	<script src="example.js"></script>
 
-	<plaintext>
-	
-		prev()					// Go to previous month, if possible
-		next()					// Go to next month, if possible
-		get()					// Get current values 		Object { start: Date|false, end: Date|false, nights: Number|false, days: Number|false }
-		set( Date )				// Takes Date between start and end, sets the calendar to the month of this date. Clears all active cells.
-		select( Date, [Date] )	// Sets (the first) calendar to the month of the passed date. If twoCalendars is true, also attempts to set the second date.
-		clear( Bool )			// Clear all clicked cells, trigger 'onClear' unless passed true for silent
-		tools: {
-			copyDate( Date )	// Returns a new Date with the same properties as the input one.
-		},
-		id						// Whatever you passed as 'id'
-		destroy					// Empty root element
-		isTwoCalendars()		// Boolean reflecting the 
-
+</body>

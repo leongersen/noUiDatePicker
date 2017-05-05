@@ -1,21 +1,18 @@
 
 	.calendar {
 		width: 280px; /* 7 * -width- */
-		float: left;
 		font-size: 14px;
-		margin: 10px;
 		user-select: none;
 	}
-
-	table {
+	.calendar-table {
 		table-layout: fixed;
 		border-spacing: 0;
 		border-collapse: collapse;
 	}
-	.row {
+	.calendar-row {
 
 	}
-	.cell {
+	.calendar-cell {
 		line-height: 40px;
 		width: 40px;
 		text-align: center;
@@ -40,11 +37,11 @@
 		background: rgba(0,0,0,0.2);
 	}
 
-	.monthheader {
+	.month-header {
 		text-align: center;
 		position: relative;
 	}
-	.monthname {
+	.month-name {
 
 	}
 
