@@ -20,26 +20,30 @@
 
 	'use strict';
 
+	// Return NEW \Date
 	Date.prototype.null = function ( ) {
 		this.setHours(0,0,0,0);
 		return this;
 	};
 
+	// Returns NEW \Date
 	Date.prototype.addDays = function ( days ) {
 		this.setDate(this.getDate() + days);
 		return this;
 	};
 
+	// Returns NEW \Date
 	Date.prototype.addMonths = function ( months ) {
 		this.setMonth(this.getMonth() + months);
 		return this;
 	};
 
+	// Return \String
 	Date.prototype.Ymd = function ( ) {
 		return this.getFullYear() + '-' + pad(this.getMonth() + 1) + '-' + pad(this.getDate());
 	};
 
-	// if y = DateTime, copy it. Otherwise, create a new one from year, month, date
+	// if y = DateTime, copy it. Otherwise, create a new one from year, month, date.
 	function copy ( y, m, d ) {
 
 		if ( y instanceof Date ) {
@@ -57,49 +61,48 @@
 		d = new Date(d);
 
 		var day = d.getDay();
-		var diff = d.getDate() - day + (day == 0 ? -6 : 1);
+		var diff = d.getDate() - day + (day === 0 ? -6 : 1);
 
 		return new Date(d.setDate(diff));
 	}
 
-	// Convert NodeList (or similar) to Array
+	// Convert NodeList (or similar) to Array.
 	function toArray ( n ) {
 		return Array.prototype.slice.call(n);
 	}
 
-	// Left pad
+	// Left pad number with 0, returns string of length 2.
 	function pad ( a ) {
 		var str = String(a);
 		var pad = '00';
 		return pad.substring(0, pad.length - str.length) + str;
 	}
 
-	// Check is date is not NaN
+	// Check is date is not NaN.
 	function isValidDate ( dt ) {
 		return Object.prototype.toString.call(dt) === "[object Date]" && !isNaN(dt.getTime());
 	}
 
-	// Checks if month and year are the same
+	// Checks if month and year are the same.
 	function isSameMonth ( dt, dt2 ) {
 		return dt.getMonth() === dt2.getMonth() && dt.getFullYear() === dt2.getFullYear();
 	}
 
-	// Generate month name and buttons
+	// Generate month name and buttons.
 	function renderMonthHeader ( dt, index, opt, paintPreviousMonth, paintNextMonth ) {
 
 		var html = '';
 
-		// P
 		paintPreviousMonth = paintPreviousMonth && (!index || !opt.twoCalendars);
 		paintNextMonth = paintNextMonth && (index || !opt.twoCalendars);
 
-		html += '<div class="month-header">';
+		html += '<div class="calendar-header">';
 
 		if ( paintPreviousMonth ) {
 			html += '<div class="button decrease">' + opt.icon + '</div>';
 		}
 
-		html += '<div class="month-name">' + opt.monthNames[dt.getMonth()] + ' ' + dt.getFullYear() + '</div>';
+		html += '<div class="calendar-header-month">' + '<strong class="month-name">' + opt.monthNames[dt.getMonth()] + '</strong>' + ' ' + dt.getFullYear() + '</div>';
 
 		if ( paintNextMonth ) {
 			html += '<div class="button increase">' + opt.icon + '</div>';
@@ -110,12 +113,12 @@
 		return html;
 	}
 
-	// Unique ID for a date cell
+	// Unique ID for a date cell.
 	function getCalcForDate ( dt ) {
 		return dt.getFullYear() + '' + pad(dt.getMonth()) + '' + pad(dt.getDate());
 	}
 
-	// Creates a new Date from the data-* properties on a cell
+	// Creates a new Date from the data-* properties on a cell.
 	function getDateFromCell ( cell ) {
 
 		if ( cell ) {
@@ -129,7 +132,7 @@
 		return false;
 	}
 
-	// Generate data-attributes for date cells
+	// Generate data-attributes for date cells.
 	function renderDateAttributes ( dt ) {
 		return 'data-calc="' + getCalcForDate(dt) + '" ' +
 			'data-day="' + dt.getDay() + '" ' +
@@ -138,7 +141,7 @@
 			'data-year="' + dt.getFullYear() + '"';
 	}
 
-	// Add cells for all dates
+	// Add cells for all dates. 'classifier' is an options aware function that assigns classes.
 	function renderDatesInMonth ( firstDayOfMonth, classifier ) {
 
 		var currentDate = getMonday(firstDayOfMonth);
@@ -183,14 +186,7 @@
 		return element;
 	}
 
-	// Attach event to element, ignore null elements
-	function addEventListener ( element, eventName, listener ) {
-		if ( element ) {
-			element.addEventListener(eventName, listener);
-		}
-	}
-
-	// Test input[type="date"] support
+	// Test input[type="date"] support.
 	function supportsInputTypeDate ( ) {
 
 		var input = document.createElement('input');
@@ -205,32 +201,31 @@
 	// Variables global to Picker are UPPERCASED.
 	function Picker ( ROOT, options ) {
 
-		// Copies of input with all time properties set to 0
+		// Copies of input with all time properties set to 0.
 		var START = copy(options.start).null();
 		var END = copy(options.end).null();
 
-		// Current calendar date
+		// Current calendar date.
 		var CURRENT = copy(START);
 
-		// TableCell
-		// Set in 'handleClickOnValidCell';
-		// Set in 'handleEventWithActiveCell';
+		// Set in 'handleClickOnValidCell'.
+		// Set in 'handleEventWithActiveCell'.
 		var ACTIVE_CELL = false;
 		var START_CELL = false;
 		var END_CELL = false;
 
-		// Array of TableCell
-		// Set in 'markCellsBetweenClickedCells';
+		// Array of table cells
+		// Set in 'markCellsBetweenClickedCells'.
 		var BETWEEN_CELLS = false;
 
-		// Whether the prev and next buttons do anything. Set in 'generateCalendarForCurrent';
+		// Whether the prev and next buttons do anything. Set in 'generateCalendarForCurrent'.
 		var CAN_NEXT = true;
 		var CAN_PREV = true;
 
-		// Furthest visible calendar
+		// Furthest visible calendar.
 		var END_LIMIT = getEndLimit(copy(END));
 
-		// Get the last \Date that can be set
+		// Get the last \Date that can be set.
 		function getEndLimit ( dt ) {
 
 			dt.addMonths(-1);
@@ -242,7 +237,7 @@
 			return dt;
 		}
 
-		// Generate list of classes for date cells
+		// Generate list of classes for date cells.
 		function classify ( currentDate, firstDayOfMonth ) {
 
 			var classes = ['calendar-cell', 'date'];
@@ -278,7 +273,7 @@
 			return renderDateAttributes(currentDate) + ' data-valid="' + valid + '" class="' + classes.join(' ') + '"';
 		}
 
-		// Read CURRENT, create a calendar. Binds click events to buttons
+		// Read CURRENT, create a calendar. Binds click events to buttons.
 		function generateCalendarForCurrent ( ) {
 
 			CURRENT.setDate(1);
@@ -297,11 +292,15 @@
 				ROOT.appendChild(build(currentCopy.addMonths(1), 1, options, CAN_PREV, CAN_NEXT, classify));
 			}
 
-			addEventListener(ROOT.querySelector('.decrease'), 'click', interfacePrev);
-			addEventListener(ROOT.querySelector('.increase'), 'click', interfaceNext);
+			// Ignore CAN_PREV and CAN_NEXT, just check if there are buttons.
+			var decrease = ROOT.querySelector('.decrease');
+			var increase = ROOT.querySelector('.increase');
+
+			if ( decrease ) decrease.addEventListener('click', interfacePrev);
+			if ( increase ) increase.addEventListener('click', interfaceNext);
 		}
 
-		// Clear ACTIVE_CELL, START_CELL, END_CELL and BETWEEN_CELLS
+		// Clear ACTIVE_CELL, START_CELL, END_CELL and BETWEEN_CELLS.
 		function clearClickedCells ( ) {
 
 			if ( ACTIVE_CELL ) {
@@ -328,7 +327,7 @@
 			BETWEEN_CELLS = false;
 		}
 
-		// Mark cells between START_CELL and END_CELL
+		// Mark cells between START_CELL and END_CELL.
 		function markCellsBetweenClickedCells ( minCalcValue, maxCalcValue ) {
 
 			BETWEEN_CELLS = toArray(ROOT.querySelectorAll('.date.is-current-month'));
@@ -343,7 +342,7 @@
 			});
 		}
 
-		// Get date cell for a \Date
+		// Get date cell for a \Date.
 		function getCellForDate ( dt ) {
 			return ROOT.querySelector('[data-calc="' + getCalcForDate(dt) + '"][data-valid="true"]');
 		}
@@ -355,6 +354,7 @@
 			}
 		}
 
+		// Handle click for a two calendar picker when a cell was already selected.
 		function handleEventWithActiveCell ( cell ) {
 
 			var activeCalcValue = Number(ACTIVE_CELL.getAttribute('data-calc'));
@@ -374,6 +374,7 @@
 			END_CELL.setAttribute('data-state', 'end');
 		}
 
+		// Depending on the state of the calendar (one or two, currently selected one or not), handle a cell click.
 		function handleClickOnValidCell ( cell, silent ) {
 
 			if ( ACTIVE_CELL && options.range ) {
@@ -389,6 +390,7 @@
 			}
 		}
 
+		// Determine whether a click target needs to trigger an action.
 		function isValidCellTarget ( target ) {
 			if ( !target ) return false;
 			if ( !target.hasAttribute('data-date') ) return false;
@@ -396,6 +398,7 @@
 			return true;
 		}
 
+		// Listen to click events without binding to every cell.
 		function delegatedCellClick ( event ) {
 
 			if ( ACTIVE_CELL && event.target === ACTIVE_CELL ) {
@@ -409,10 +412,12 @@
 			}
 		}
 
+		// Bind 'delegatedCellClick' to ROOT.
 		function attachNodeEvents ( ) {
 			ROOT.addEventListener('click', delegatedCellClick);
 		}
 
+		// Should there be a 'previous' button to go to the previous month? *\Boolean
 		function interfacePrev ( ) {
 			if ( !CAN_PREV ) return;
 			CURRENT.addMonths(-1);
@@ -420,6 +425,7 @@
 			emitEvent('Select');
 		}
 
+		// Should there be a 'next' button to go to the next month? *\Boolean
 		function interfaceNext ( ) {
 			if ( !CAN_NEXT ) return;
 			CURRENT.addMonths(1);
@@ -427,6 +433,7 @@
 			emitEvent('Select');
 		}
 
+		// Get current state. *{ start: \Date|false, end: \Date|false, nights: \Number|false, days: \Number|false }
 		function interfaceGet ( ) {
 
 			var s = getDateFromCell(START_CELL);
@@ -445,11 +452,23 @@
 			};
 		}
 
+		// Limits \Date to START and END. Returns copy of input.
+		function wrapOrCopy ( dt ) {
+			if ( dt < START ) return copy(START);
+			if ( dt > END ) return copy(END);
+			return copy(dt);
+		}
+
+		// Set a date. *\Date
 		function interfaceSet ( dt ) {
 
-			if ( !isValidDate(dt) || dt < START || dt > END ) {
+			// Entry of invalid date points to a bug elsewhere
+			if ( !isValidDate(dt) ) {
 				throw new Error('date not valid (' + dt + ')');
 			}
+
+			// Silently wrap to START and END
+			dt = wrapOrCopy(dt);
 
 			interfaceClear(true);
 
@@ -462,17 +481,25 @@
 			generateCalendarForCurrent();
 		}
 
-		function interfaceSelect ( dtStart, dtEnd ) {
+		// Set a date cell to active. *\Date, [\Date], [\Boolean]
+		function interfaceSelect ( dtStart, dtEnd, silent ) {
 
-			interfaceSet(copy(dtStart));
+			dtStart = wrapOrCopy(dtStart);
+
+			interfaceSet(dtStart);
 
 			handleClickOnValidCell(getCellForDate(dtStart), true);
 
 			if ( dtEnd && options.twoCalendars ) {
-				handleClickOnValidCell(getCellForDate(dtEnd), true);
+				handleClickOnValidCell(getCellForDate(wrapBounds(dtEnd)), true);
+			}
+
+			if ( !silent ) {
+				emitEvent('Select');
 			}
 		}
 
+		// Clear selected dates. *\Boolean
 		function interfaceClear ( silent ) {
 			clearClickedCells();
 
@@ -481,39 +508,41 @@
 			}
 		}
 
+		// Clears ROOT, unbinds events.
 		function interfaceDestroy ( ) {
+			ROOT.removeEventListener('click', delegatedCellClick);
 			ROOT.innerHTML = '';
 		}
 
-		function interfaceIsTwoCalendars ( ) {
-			return !!options.twoCalendars;
-		}
-
+		// CURRENT is START by default.
 		generateCalendarForCurrent();
 		attachNodeEvents();
 
 		var API = {
-			prev: interfacePrev,
-			next: interfaceNext,
-			get: interfaceGet,
-			set: interfaceSet,
-			select: interfaceSelect,
-			clear: interfaceClear,
-			destroy: interfaceDestroy,
-			isTwoCalendars: interfaceIsTwoCalendars
+			prev: interfacePrev, // No Arguments. No operation if impossible. No return value. Emits 'Select'.
+			next: interfaceNext, // No Arguments. No operation if impossible. No return value. Emits 'Select'.
+			get: interfaceGet, // No Arguments. Returns { start: \Date|false, end: \Date|false, nights: \Number|false, days: \Number|false }. Does not emit.
+			set: interfaceSet, // Argument \Date. Sets left-most calendar to month in which \Date lies. No return value. Does not emit.
+			select: interfaceSelect, // Arguments \Date, [\Date, [\Boolean]]. Calls 'set' using first date. Selects first date.
+									// If second date is passed, selects it and marks in between cells. Emits 'Select' unless \Boolean silent is true.
+			clear: interfaceClear, // Argument \Boolean. Clears all selections. Emits 'Clear' unless \Boolean silent is true.
+			destroy: interfaceDestroy // No Arguments. Empties ROOT. No return value. Does not emit.
 		};
 
 		return API;
 	}
 
+	// Expose tools
 	Picker.prototype.pad = pad;
 	Picker.prototype.copy = copy;
+	Picker.prototype.isValidDate = isValidDate;
 
 	// Set a class on the document for external use
 	if ( !supportsInputTypeDate() ) {
 		document.documentElement.classList.add('js-no-type-date-support');
 	}
 
+	// Expose Constructor
 	return Picker;
 
 }));

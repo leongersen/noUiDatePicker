@@ -37,12 +37,11 @@
 		background: rgba(0,0,0,0.2);
 	}
 
-	.month-header {
+	.calendar-header {
 		text-align: center;
 		position: relative;
-	}
-	.month-name {
-
+		line-height: 42px;
+		font-size: 16px;
 	}
 
 	.button {

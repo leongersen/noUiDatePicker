@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+
+<style>
+	html {
+		font: 400 16px 'Open Sans', 'Arial';
+	}
+</style>
+
 <link href="picker.css" rel="stylesheet">
 
 <style>
@@ -10,10 +18,12 @@
 
 	.calendar {
 		background: #FFF;
+		box-shadow: 0 0 5px rgba(0,0,0,.4);
+
 		position: absolute;
+		z-index: 10;
 		top: 100%;
 		left: 0;
-		z-index: 10;
 	}
 
 	.date-input-fallback {
