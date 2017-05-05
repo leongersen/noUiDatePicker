@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<head>
+	<title>Testing</title>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+	<link href="picker.css" rel="stylesheet">
+
+	<link href="https://code.jquery.com/qunit/qunit-1.18.0.css" rel="stylesheet">
+	<script src="https://code.jquery.com/qunit/qunit-1.18.0.js"></script>
+
+	<script src="picker.js" data-cover></script>
+
+</head>
+
+<body>
+
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+
+	<script>
+
+		var Q = document.getElementById('qunit-fixture');
+
+		var dayNamesShort = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
+		var monthNames = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+		var icon = '<svg viewBox="0 0 512 512"><polygon points="268.395,256 134.559,121.521 206.422,50 411.441,256 206.422,462 134.559,390.477 "/></svg>';
+
+		QUnit.test('Single Calendar', function( assert ){
+
+			assert.expect(11 + 4);
+
+			Q.innerHTML = '<div class="picker"></div>';
+
+			var root = Q.querySelector('.picker');
+
+			var picker = new Picker(root, {
+				start: new Date('2016-08-09'),
+				end: new Date('2017-02-18'),
+				icon: icon,
+				twoCalendars: false,
+				dayNamesShort: dayNamesShort,
+				monthNames: monthNames,
+				onSelect: function ( ) {
+					assert.ok(true); // Count selects
+				},
+				onClear: function ( ) {
+					assert.equal(picker, this);
+				},
+			});
+
+			var d = new Date('2016-09-09');
+
+			assert.equal(picker.get().start, false);
+
+			picker.set(d);
+
+			assert.equal(root.querySelectorAll('.calendar-is-ok').length, 30, 'Had 30 days in september');
+			assert.equal(root.querySelectorAll('.calendar-week').length, 6, 'Rendered 6 weeks');
+			assert.equal(picker.get().start, false, 'Set did not select a week');
+
+			picker.select(d);
+
+			assert.equal(picker.get().start.Ymd(), '2016-09-09');
+
+			picker.select(new Date('2015-01-01'));
+			assert.equal(picker.get().start.Ymd(), '2016-08-09', 'Wrapped to start');
+
+			picker.select(new Date('2019-01-01'));
+			assert.equal(picker.get().start.Ymd(), '2017-02-18', 'Wrapped to end');
+
+			picker.select(new Date('2017-02-17 19:00:00'));
+			assert.equal(picker.get().start.Ymd(), '2017-02-17', 'Ignored time');
+
+			picker.next();
+			assert.equal(picker.get().start.Ymd(), '2017-02-17', 'Ignored move and didn\'t clear.');
+
+			picker.prev();
+			assert.equal(picker.get().start, false, 'Moved and cleared');
+
+		});
+
+		var noop = function(){};
+		var assert = { ok: noop, equal: noop };
+
+		QUnit.test('Multi Calendar', function( assert ){
+
+			assert.expect(8 + 1);
+
+			Q.innerHTML = '<div class="picker"></div>';
+
+			var root = Q.querySelector('.picker');
+
+			var picker = new Picker(root, {
+				start: new Date('2016-08-09'),
+				end: new Date('2017-02-18'),
+				icon: icon,
+				twoCalendars: true,
+				dayNamesShort: dayNamesShort,
+				monthNames: monthNames,
+				onSelect: function ( ) {
+					assert.ok(true); // Count selects
+				},
+				onClear: function ( ) {
+					assert.equal(picker, this);
+				},
+			});
+
+			var d1 = new Date('2016-09-09');
+			var d2 = new Date('2016-10-09');
+
+			picker.set(d1, d2);
+
+			assert.equal(root.querySelectorAll('.calendar-is-ok').length, 61, 'Had 30 days in september + 31 in oktober');
+			assert.equal(root.querySelectorAll('.calendar-week').length, 12, 'Rendered 12 weeks');
+
+			picker.select(d1, d2);
+
+			assert.equal(picker.get().start.Ymd(), d1.Ymd(), 'Start was set ok');
+			assert.equal(picker.get().end.Ymd(), d2.Ymd(), 'End was set ok');
+			assert.equal(picker.get().nights, 30, 'Nights ok');
+			assert.equal(picker.get().days, 31, 'Days ok');
+
+			assert.equal(root.querySelectorAll('[data-state="start"],[data-state="end"]').length, 2, 'Had a start and end selected');
+			assert.equal(root.querySelectorAll('[data-state="between"]').length, 29, 'Days between selected ok');
+
+		});
+
+
+	</script>
+
+	<script src="blanket.min.js"></script>
+</body>

@@ -20,6 +20,8 @@
 
 	'use strict';
 
+	var VERSION = '0.0.1';
+
 	var Classes = {
 		header: 'calendar-header',
 		button: 'calendar-button',
@@ -33,6 +35,7 @@
 		calendar: 'calendar',
 		cell: 'calendar-cell',
 		date: 'calendar-date',
+		week: 'calendar-week',
 		isOtherMonth: 'calendar-is-other-month',
 		isCurrentMonth: 'calendar-is-current-month',
 		isEdge: 'calendar-is-edge',
@@ -173,7 +176,7 @@
 
 		for ( var i = 0; i < 6; i++ ) {
 
-			html += '<tr class="' + Classes.row + '">';
+			html += '<tr class="' + Classes.row + ' ' + Classes.week + '">';
 
 			for ( var j = 0; j < 7; j++ ) {
 				html += '<td ' + classifier(currentDate, firstDayOfMonth) +'>' + currentDate.getDate() + '</td>';
@@ -224,6 +227,10 @@
 
 	// Variables global to Picker are UPPERCASED.
 	function Picker ( ROOT, options ) {
+
+		if ( !ROOT ) {
+			throw new Error("noUiDatePicker (" + VERSION + "): create requires a single element.");
+		}
 
 		// Copies of input with all time properties set to 0.
 		var START = copy(options.start).null();
@@ -401,7 +408,7 @@
 		// Depending on the state of the calendar (one or two, currently selected one or not), handle a cell click.
 		function handleClickOnValidCell ( cell, silent ) {
 
-			if ( ACTIVE_CELL && options.range ) {
+			if ( ACTIVE_CELL && options.twoCalendars ) {
 				handleEventWithActiveCell(cell);
 			} else {
 				clearClickedCells();
@@ -446,7 +453,7 @@
 			if ( !CAN_PREV ) return;
 			CURRENT.addMonths(-1);
 			generateCalendarForCurrent();
-			emitEvent('Select');
+			emitEvent('Clear');
 		}
 
 		// Should there be a 'next' button to go to the next month? *\Boolean
@@ -454,7 +461,7 @@
 			if ( !CAN_NEXT ) return;
 			CURRENT.addMonths(1);
 			generateCalendarForCurrent();
-			emitEvent('Select');
+			emitEvent('Clear');
 		}
 
 		// Get current state. *{ start: \Date|false, end: \Date|false, nights: \Number|false, days: \Number|false }
@@ -515,7 +522,7 @@
 			handleClickOnValidCell(getCellForDate(dtStart), true);
 
 			if ( dtEnd && options.twoCalendars ) {
-				handleClickOnValidCell(getCellForDate(wrapBounds(dtEnd)), true);
+				handleClickOnValidCell(getCellForDate(wrapOrCopy(dtEnd)), true);
 			}
 
 			if ( !silent ) {
@@ -543,8 +550,8 @@
 		attachNodeEvents();
 
 		var API = {
-			prev: interfacePrev, // No Arguments. No operation if impossible. No return value. Emits 'Select'.
-			next: interfaceNext, // No Arguments. No operation if impossible. No return value. Emits 'Select'.
+			prev: interfacePrev, // No Arguments. No operation if impossible. No return value. Emits 'Clear'.
+			next: interfaceNext, // No Arguments. No operation if impossible. No return value. Emits 'Clear'.
 			get: interfaceGet, // No Arguments. Returns { start: \Date|false, end: \Date|false, nights: \Number|false, days: \Number|false }. Does not emit.
 			set: interfaceSet, // Argument \Date. Sets left-most calendar to month in which \Date lies. No return value. Does not emit.
 			select: interfaceSelect, // Arguments \Date, [\Date, [\Boolean]]. Calls 'set' using first date. Selects first date.
