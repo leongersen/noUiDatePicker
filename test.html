@@ -21,6 +21,8 @@
 
 	<script>
 
+		var noop = function(){};
+		var assert = { ok: noop, equal: noop, expect: noop };
 		var Q = document.getElementById('qunit-fixture');
 
 		var dayNamesShort = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
@@ -29,7 +31,7 @@
 
 		QUnit.test('Single Calendar', function( assert ){
 
-			assert.expect(11 + 4);
+			assert.expect(19);
 
 			Q.innerHTML = '<div class="picker"></div>';
 
@@ -66,9 +68,13 @@
 
 			picker.select(new Date('2015-01-01'));
 			assert.equal(picker.get().start.Ymd(), '2016-08-09', 'Wrapped to start');
+			assert.equal(root.querySelectorAll('.calendar-is-edge').length, 1, 'At start of calendar');
+			assert.equal(root.querySelectorAll('.calendar-is-before-start').length, 8, 'Aug 1 2016 is a tuesday, so monday + 1 week until the 8th');
 
 			picker.select(new Date('2019-01-01'));
 			assert.equal(picker.get().start.Ymd(), '2017-02-18', 'Wrapped to end');
+			assert.equal(root.querySelectorAll('.calendar-is-edge').length, 1, 'At end of calendar');
+			assert.equal(root.querySelectorAll('.calendar-is-after-end').length, 22, 'Feb 18 is a saturday, so the sunday, + 3 weeks = 21');
 
 			picker.select(new Date('2017-02-17 19:00:00'));
 			assert.equal(picker.get().start.Ymd(), '2017-02-17', 'Ignored time');
@@ -81,12 +87,9 @@
 
 		});
 
-		var noop = function(){};
-		var assert = { ok: noop, equal: noop };
-
 		QUnit.test('Multi Calendar', function( assert ){
 
-			assert.expect(8 + 1);
+			assert.expect(27);
 
 			Q.innerHTML = '<div class="picker"></div>';
 
@@ -100,10 +103,10 @@
 				dayNamesShort: dayNamesShort,
 				monthNames: monthNames,
 				onSelect: function ( ) {
-					assert.ok(true); // Count selects
+					assert.ok(true, 'Select Triggered'); // Count selects
 				},
 				onClear: function ( ) {
-					assert.equal(picker, this);
+					assert.equal(picker, this, 'Clear triggered');
 				},
 			});
 
@@ -125,8 +128,36 @@
 			assert.equal(root.querySelectorAll('[data-state="start"],[data-state="end"]').length, 2, 'Had a start and end selected');
 			assert.equal(root.querySelectorAll('[data-state="between"]').length, 29, 'Days between selected ok');
 
-		});
+			picker.clear();
 
+			picker.select(d1);
+
+			root.querySelector('[data-calc="20161017"]').click();
+
+			assert.equal(picker.get().start.Ymd(), d1.Ymd(), 'Start was set ok');
+			assert.equal(picker.get().end.Ymd(), '2016-10-17', 'End was set ok');
+
+			picker.clear();
+			assert.equal(root.querySelectorAll('[data-state="between"],[data-state="start"],[data-state="end"]').length, 0, 'Cleared all');
+
+			picker.select(d2);
+
+			root.querySelector('[data-calc="20161009"]').click(); // Click selected cell, fires clear
+			assert.equal(root.querySelectorAll('[data-state="start"],[data-state="end"]').length, 0, 'Cell was cleared');
+			assert.equal(picker.get().start, false, 'Start was cleared');
+			assert.equal(picker.get().end, false, 'End was not set');
+
+			picker.next();
+			assert.equal(root.querySelector('.calendar-month-name').innerText, 'November', 'First was okt (due to select(d2)), should now be nov.');
+
+			picker.select(new Date('2017-02-18'));
+			assert.equal(root.querySelector('.calendar-is-ok').getAttribute('data-month'), '0', 'Month should be January, as a select for same month of end should go back a month.');
+
+			assert.throws(function() { picker.set(new Date('*')); }, 'Invalid date is correctly broken');
+
+			picker.destroy();
+			assert.equal(root.innerHTML, '', 'Root was empty');
+		});
 
 	</script>
 

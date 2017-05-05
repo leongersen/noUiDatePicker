@@ -142,7 +142,7 @@
 
 	// Unique ID for a date cell.
 	function getCalcForDate ( dt ) {
-		return dt.getFullYear() + '' + pad(dt.getMonth()) + '' + pad(dt.getDate());
+		return dt.getFullYear() + '' + pad(dt.getMonth() + 1) + '' + pad(dt.getDate());
 	}
 
 	// Creates a new Date from the data-* properties on a cell.
@@ -164,7 +164,7 @@
 		return 'data-calc="' + getCalcForDate(dt) + '" ' +
 			'data-day="' + dt.getDay() + '" ' +
 			'data-date="' + dt.getDate() + '" ' +
-			'data-month="' + dt.getMonth() + '" ' +
+			'data-month="' + dt.getMonth() + '" ' + // Note! This is 0 indexed!
 			'data-year="' + dt.getFullYear() + '"';
 	}
 
@@ -504,7 +504,7 @@
 			interfaceClear(true);
 
 			if ( options.twoCalendars && isSameMonth(dt, END) ) {
-				dt.addMonths(-1);
+				dt = dt.addMonths(-1);
 			}
 
 			CURRENT = dt.null();
