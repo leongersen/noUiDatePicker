@@ -1,0 +1,16 @@
+{
+  "name": "nouidatepicker",
+  "version": "1.0.0",
+  "main": "distribute/nouislider",
+  "license": "WTFPL",
+  "scripts": {
+    "jshint": "jshint picker.js"
+  },
+  "devDependencies": {
+    "jshint": "^2.9.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/leongersen/noUiDatePicker.git"
+  }
+}
