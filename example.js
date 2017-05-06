@@ -37,8 +37,8 @@
 		}
 
 		var picker = new Picker(root, {
-			start: new Date(dateInput.min),
-			end: new Date(dateInput.max),
+			min: new Date(dateInput.min),
+			max: new Date(dateInput.max),
 			icon: icon,
 			twoCalendars: false,
 			dayNamesShort: dayNamesShort,

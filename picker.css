@@ -9,22 +9,17 @@
 		border-spacing: 0;
 		border-collapse: collapse;
 	}
-	.calendar-row {
-
-	}
 	.calendar-cell {
 		line-height: 40px;
 		width: 40px;
 		text-align: center;
 	}
-
 	.calendar-day-name {
 		font-size: 12px;
 		line-height: 20px;
 		padding-top: 10px;
 		color: #BBB;
 	}
-
 	.calendar-date {
 		cursor: default;
 		border: 1px solid #EEE;
@@ -36,14 +31,12 @@
 	.calendar-date[data-valid="true"]:hover {
 		background: rgba(0,0,0,0.2);
 	}
-
 	.calendar-header {
 		text-align: center;
 		position: relative;
 		line-height: 42px;
 		font-size: 16px;
 	}
-
 	.calendar-button {
 		position: absolute;
 		top: 0;
@@ -63,16 +56,23 @@
 		width: 20px;
 		height: 20px;
 	}
-
-	.calendar-button-decrease { left: 0; }
-	.calendar-button-decrease svg { transform: rotate(180deg); }
-	.calendar-button-increase { right: 0; }
-
+	.calendar-button-decrease {
+		left: 0;
+	}
+	.calendar-button-decrease svg {
+		transform: rotate(180deg);
+	}
+	.calendar-button-increase {
+		right: 0;
+	}
 	.calendar-is-edge,
-	.calendar-is-ok { color: #333; }
+	.calendar-is-ok {
+		color: #333;
+	}
 	.calendar-is-outside,
-	.calendar-is-other-month { color: #DDD; }
-
+	.calendar-is-other-month {
+		color: #DDD;
+	}
 	.calendar-date[data-state] {
 		border-style: double;
 	}

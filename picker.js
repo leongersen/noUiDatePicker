@@ -20,8 +20,6 @@
 
 	'use strict';
 
-	var VERSION = '0.0.1';
-
 	var Classes = {
 		header: 'calendar-header',
 		button: 'calendar-button',
@@ -229,15 +227,19 @@
 	function Picker ( ROOT, options ) {
 
 		if ( !ROOT ) {
-			throw new Error("noUiDatePicker (" + VERSION + "): create requires a single element.");
+			throw new Error("noUiDatePicker requires a single element.");
+		}
+
+		if ( !isValidDate(options.min) || !isValidDate(options.max) ) {
+			throw new Error("noUiDatePicker requires valid dates.");
 		}
 
 		// Copies of input with all time properties set to 0.
-		var START = copy(options.start).null();
-		var END = copy(options.end).null();
+		var MIN = copy(options.min).null();
+		var MAX = copy(options.max).null();
 
 		// Current calendar date.
-		var CURRENT = copy(START);
+		var CURRENT = copy(MIN);
 
 		// Set in 'handleClickOnValidCell'.
 		// Set in 'handleEventWithActiveCell'.
@@ -254,7 +256,7 @@
 		var CAN_PREV = true;
 
 		// Furthest visible calendar.
-		var END_LIMIT = getEndLimit(copy(END));
+		var END_LIMIT = getEndLimit(copy(MAX));
 
 		// Get the last \Date that can be set.
 		function getEndLimit ( dt ) {
@@ -283,17 +285,17 @@
 				currentMonth = true;
 			}
 
-			if ( currentDate.getTime() === START.getTime() ) {
+			if ( currentDate.getTime() === MIN.getTime() ) {
 				classes.push(Classes.isEdge);
 				classes.push(Classes.isStart);
-			} else if ( currentDate < START ) {
+			} else if ( currentDate < MIN ) {
 				valid = 'false';
 				classes.push(Classes.isOutside);
 				classes.push(Classes.isBeforeStart);
-			} else if ( currentDate.getTime() === END.getTime() ) {
+			} else if ( currentDate.getTime() === MAX.getTime() ) {
 				classes.push(Classes.isEdge);
 				classes.push(Classes.isEnd);
-			} else if ( currentDate > END ) {
+			} else if ( currentDate > MAX ) {
 				valid = 'false';
 				classes.push(Classes.isOutside);
 				classes.push(Classes.isAfterEnd);
@@ -311,7 +313,7 @@
 
 			var currentCopy = copy(CURRENT);
 
-			CAN_PREV = currentCopy >= START;
+			CAN_PREV = currentCopy >= MIN;
 			CAN_NEXT = currentCopy <= END_LIMIT;
 
 			clearClickedCells();
@@ -483,10 +485,10 @@
 			};
 		}
 
-		// Limits \Date to START and END. Returns copy of input.
+		// Limits \Date to MIN and MAX. Returns copy of input.
 		function wrapOrCopy ( dt ) {
-			if ( dt < START ) return copy(START);
-			if ( dt > END ) return copy(END);
+			if ( dt < MIN ) return copy(MIN);
+			if ( dt > MAX ) return copy(MAX);
 			return copy(dt);
 		}
 
@@ -498,12 +500,12 @@
 				throw new Error('date not valid (' + dt + ')');
 			}
 
-			// Silently wrap to START and END
+			// Silently wrap to MIN and MAX
 			dt = wrapOrCopy(dt);
 
 			interfaceClear(true);
 
-			if ( options.twoCalendars && isSameMonth(dt, END) ) {
+			if ( options.twoCalendars && isSameMonth(dt, MAX) ) {
 				dt.addMonths(-1); // Modifies 'dt'
 			}
 
@@ -545,7 +547,7 @@
 			ROOT.innerHTML = '';
 		}
 
-		// CURRENT is START by default.
+		// CURRENT is MIN by default.
 		generateCalendarForCurrent();
 		attachNodeEvents();
 
