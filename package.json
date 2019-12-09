@@ -1,14 +1,23 @@
 {
   "name": "nouidatepicker",
-  "version": "1.0.0",
-  "main": "distribute/nouislider",
-  "license": "WTFPL",
+  "version": "1.1.0",
+  "author": "leongersen",
+  "license": "MIT",
   "scripts": {
-    "jshint": "jshint picker.js"
+    "jshint": "jshint picker.js",
+    "format": "prettier picker.js --write --print-width=120",
+    "minify": "uglifyjs picker.js --compress --mangle --output picker.min.js",
+    "build": "npm run format && npm run minify"
   },
   "devDependencies": {
-    "jshint": "^2.9.4"
+    "jshint": "^2.9.4",
+    "prettier": "^1.19.1",
+    "uglify-js": "^3.7.2"
   },
+  "files": [
+    "picker.js",
+    "picker.min.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/leongersen/noUiDatePicker.git"
