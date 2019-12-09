@@ -1,6 +1,6 @@
 {
   "name": "nouidatepicker",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "leongersen",
   "license": "MIT",
   "scripts": {
@@ -15,6 +15,7 @@
     "uglify-js": "^3.7.2"
   },
   "files": [
+    "picker.css",
     "picker.js",
     "picker.min.js"
   ],
