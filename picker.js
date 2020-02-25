@@ -433,9 +433,11 @@
     function delegatedCellClick(event) {
       if (ACTIVE_CELL && event.target === ACTIVE_CELL) {
         event.stopPropagation();
+        event.preventDefault();
         interfaceClear();
       } else if (isValidCellTarget(event.target)) {
         event.stopPropagation();
+        event.preventDefault();
         handleClickOnValidCell(event.target);
       }
     }
