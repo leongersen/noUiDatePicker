@@ -10,7 +10,7 @@
     "build": "npm run format && npm run minify"
   },
   "devDependencies": {
-    "jshint": "^2.9.4",
+    "jshint": "^2.13.6",
     "prettier": "^1.19.1",
     "uglify-js": "^3.7.2"
   },
